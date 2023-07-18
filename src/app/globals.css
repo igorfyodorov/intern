@@ -1,0 +1,162 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+html{
+    background-color: rgba(0, 0, 0, 0.04);
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+.record {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 35px;
+    font-family: Roboto, sans-serif;
+    font-size: 13px;
+    padding: 2px 15px;
+    height: 35px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    user-select: none;
+}
+
+.record div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 50px;
+}
+
+.record:hover {
+    background-color: rgba(9, 125, 145, 0.1);
+}
+
+.tab {
+    border: 1px solid #E6E6E6;
+    outline: none;
+    text-decoration: none;
+    border-bottom: none;
+    color: #999;
+    width: 20%;
+    padding: 8px 24px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.activeTab {
+    border: 1px solid #097d91;
+    outline: none;
+    text-decoration: none;
+    border-bottom: none;
+    color: #097d91;
+    width: 20%;
+    padding: 8px 24px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.tab:hover {
+    color: #097d91;
+}
+
+#main button {
+    height: 22px;
+    width: 22px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+#main button:hover {
+    background-color: aliceblue;
+}
+
+.editWindow {
+    position: absolute;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 20px;
+    width: 300px;
+    left: 100vw;
+    top: 5vh;
+    height: min-content;
+    background-color: white;
+    animation: createEditWindowEnter 500ms ease-out forwards;
+}
+
+.h {
+    text-align: center;
+}
+
+.editWindow p:first-child {
+    font-size: 15px;
+    font-family: Roboto Thin, sans-serif;
+    text-decoration: none;
+}
+
+.editWindow > div {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.char {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+select, input {
+    outline: none;
+    border: 1px solid #097d91;
+    box-sizing: border-box;
+    padding: 5px 8px;
+    border-radius: 10px;
+    width: 100%;
+}
+
+select {
+    cursor: pointer;
+}
+
+.svg {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.svg button {
+    cursor: pointer;
+    height: 22px;
+    width: 22px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+
+@keyframes createEditWindowEnter {
+    from {
+        left: 100vw;
+        opacity: 0;
+    }
+
+    to {
+        left: calc(100vw - 320px);
+        opacity: 1;
+    }
+}
+
+.x {
+    bottom: 0;
+}

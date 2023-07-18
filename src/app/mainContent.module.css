@@ -1,0 +1,38 @@
+.wrapper {
+    position: absolute;
+    box-sizing: border-box;
+    margin: -5vh calc(50% - 500px);
+    width: 1000px;
+    padding: 0 30px 30px 30px;
+    background-color: white;
+    height: 687px;
+}
+
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: calc(100% - 40px);
+    padding: 20px;
+    border: 1px solid #097d91;
+    border-radius: 0 10px 10px 10px;
+    height: calc(100% - 40px);
+    overflow-y: auto;
+    overflow-x: unset;
+    flex-shrink: unset;
+}
+
+.wrapper > button {
+    position: absolute;
+    padding: 10px;
+    right: 50px;
+    top: 20px;
+    box-sizing: border-box;
+    width: 150px;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: Roboto, sans-serif;
+    border: 1px solid #097d91;
+    border-radius: 10px;
+}
