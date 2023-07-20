@@ -23,6 +23,10 @@
     flex-shrink: unset;
 }
 
+.mainContent::-webkit-scrollbar {
+    width: 0;
+}
+
 .wrapper > button {
     position: absolute;
     padding: 10px;
