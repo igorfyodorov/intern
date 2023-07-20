@@ -6,8 +6,9 @@ import {usePathname} from "next/navigation";
 
 export default function MainContent() {
     const pathname = usePathname();
+    const token = 'z8aAJDmdkZOGY4v1uSW_gdAa3NwAdVilQRToRGMLQcyH6pHRdVpEjtyyK6fCtajL5yGzoCXfI7kk5Ow5G9TwHkh_iEjAEEl_5EyP54BdEHeZ8whoiA6jrXSqg_F-tmB5Ubktv9reqn7u6MepgoNeElmhWStIG6sOQzPu4M9odzGhrLMN5EinujiJZHeeVd2ZjmrYi_XYW0nuIPzXlSD0f0Enmr6qkt-P8JkZtP-f0FyKEFFcu5NcgSQdwyaQs0t0xFkFJAKsYVdiLy1YmJpPOBxC6h4H-Jy5jAW_CJQ-4MzaTd0NA54E0Wl_okxNY9kFRPhQg4geOJ2J_pIA95mw8vNnex4q9W3UubBx-_lkGtomObVvaul0249ewxQUmbEy0mrhG3Zvxgf-kLI_rpmCKHJ4VJlBth0nN5XyE6B8YSOdNUXmWPVP8rkC9xjKt3v7lNuTuqKA6Av-IFJeUGWtm4Um4_4LGJE54r8PhlfnIWAwI9Xx';
 
-    // all api requests
+    // api requests
     // START
     async function getAllRecords() {
         let result;
@@ -17,23 +18,62 @@ export default function MainContent() {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'X-APIKey': 'z8aAJDmdkZOGY4v1uSW_gdAa3NwAdVilQRToRGMLQcyH6pHRdVpEjtyyK6fCtajL5yGzoCXfI7kk5Ow5G9TwHkh_iEjAEEl_5EyP54BdEHeZ8whoiA6jrXSqg_F-tmB5Ubktv9reqn7u6MepgoNeElmhWStIG6sOQzPu4M9odzGhrLMN5EinujiJZHeeVd2ZjmrYi_XYW0nuIPzXlSD0f0Enmr6qkt-P8JkZtP-f0FyKEFFcu5NcgSQdwyaQs0t0xFkFJAKsYVdiLy1YmJpPOBxC6h4H-Jy5jAW_CJQ-4MzaTd0NA54E0Wl_okxNY9kFRPhQg4geOJ2J_pIA95mw8vNnex4q9W3UubBx-_lkGtomObVvaul0249ewxQUmbEy0mrhG3Zvxgf-kLI_rpmCKHJ4VJlBth0nN5XyE6B8YSOdNUXmWPVP8rkC9xjKt3v7lNuTuqKA6Av-IFJeUGWtm4Um4_4LGJE54r8PhlfnIWAwI9Xx'
+                'X-APIKey': token,
             }
         }).then(function(response) {
             return response.json();
         }).then(function(responseJSON) {
-            result = responseJSON.data.items;
+            if(responseJSON.isSuccess) {
+                result = responseJSON.data.items;
+            }
+            else
+                alert(responseJSON.errorMessage);
         });
 
         return result;
     }   // GET-request
 
-    async function getTheRecordsTree(id: number) {
-        let all = await getAllRecords();
+    async function editRecord(id, fields) {
+        await fetch(`https://api.planfact.io/api/v1/operationcategories/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(fields),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-APIKey': token,
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(responseJSON) {
+            if (responseJSON.isSuccess) {
+                document.body.removeChild(document.getElementsByClassName("editWindow")[0]);
+                reloadMC();
+            }
+            else
+                alert(responseJSON.errorMessage);
+        });
+    } // PUT-request
 
-        let tree = [];
-        tree.push(all.filter(item => item.operationCategoryId == id))
-    }
+    async function createRecord(fields) {
+        await fetch(`https://api.planfact.io/api/v1/operationcategories`, {
+            method: 'POST',
+            body: JSON.stringify(fields),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-APIKey': token,
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(responseJSON) {
+            if (responseJSON.isSuccess) {
+                document.body.removeChild(document.getElementsByClassName("editWindow")[0]);
+                reloadMC();
+            }
+            else
+                alert(responseJSON.errorMessage);
+        });
+    } // POST-request
 
     async function deleteRecord(id: number) {
         await fetch(`https://api.planfact.io/api/v1/operationcategories/${id}`, {
@@ -41,7 +81,7 @@ export default function MainContent() {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'X-APIKey': 'z8aAJDmdkZOGY4v1uSW_gdAa3NwAdVilQRToRGMLQcyH6pHRdVpEjtyyK6fCtajL5yGzoCXfI7kk5Ow5G9TwHkh_iEjAEEl_5EyP54BdEHeZ8whoiA6jrXSqg_F-tmB5Ubktv9reqn7u6MepgoNeElmhWStIG6sOQzPu4M9odzGhrLMN5EinujiJZHeeVd2ZjmrYi_XYW0nuIPzXlSD0f0Enmr6qkt-P8JkZtP-f0FyKEFFcu5NcgSQdwyaQs0t0xFkFJAKsYVdiLy1YmJpPOBxC6h4H-Jy5jAW_CJQ-4MzaTd0NA54E0Wl_okxNY9kFRPhQg4geOJ2J_pIA95mw8vNnex4q9W3UubBx-_lkGtomObVvaul0249ewxQUmbEy0mrhG3Zvxgf-kLI_rpmCKHJ4VJlBth0nN5XyE6B8YSOdNUXmWPVP8rkC9xjKt3v7lNuTuqKA6Av-IFJeUGWtm4Um4_4LGJE54r8PhlfnIWAwI9Xx'
+                'X-APIKey': token,
             }
         }).then(function(response) {
             return response.json();
@@ -53,49 +93,8 @@ export default function MainContent() {
                 alert(responseJSON.errorMessage);
         });
     }   // DELETE-request
-
-    async function editRecord(id, fields) {
-        await fetch(`https://api.planfact.io/api/v1/operationcategories/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify(fields),
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-APIKey': 'z8aAJDmdkZOGY4v1uSW_gdAa3NwAdVilQRToRGMLQcyH6pHRdVpEjtyyK6fCtajL5yGzoCXfI7kk5Ow5G9TwHkh_iEjAEEl_5EyP54BdEHeZ8whoiA6jrXSqg_F-tmB5Ubktv9reqn7u6MepgoNeElmhWStIG6sOQzPu4M9odzGhrLMN5EinujiJZHeeVd2ZjmrYi_XYW0nuIPzXlSD0f0Enmr6qkt-P8JkZtP-f0FyKEFFcu5NcgSQdwyaQs0t0xFkFJAKsYVdiLy1YmJpPOBxC6h4H-Jy5jAW_CJQ-4MzaTd0NA54E0Wl_okxNY9kFRPhQg4geOJ2J_pIA95mw8vNnex4q9W3UubBx-_lkGtomObVvaul0249ewxQUmbEy0mrhG3Zvxgf-kLI_rpmCKHJ4VJlBth0nN5XyE6B8YSOdNUXmWPVP8rkC9xjKt3v7lNuTuqKA6Av-IFJeUGWtm4Um4_4LGJE54r8PhlfnIWAwI9Xx'
-            }
-        }).then(function(response) {
-            return response.json();
-        }).then(function(responseJSON) {
-            if (responseJSON.isSuccess) {
-                document.body.removeChild(document.getElementsByClassName("editWindow")[0]);
-                reloadMC();
-            }
-            else
-                alert(responseJSON.errorMessage);
-        });
-    }
-    async function createRecord(fields) {
-        await fetch(`https://api.planfact.io/api/v1/operationcategories`, {
-            method: 'POST',
-            body: JSON.stringify(fields),
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-APIKey': 'z8aAJDmdkZOGY4v1uSW_gdAa3NwAdVilQRToRGMLQcyH6pHRdVpEjtyyK6fCtajL5yGzoCXfI7kk5Ow5G9TwHkh_iEjAEEl_5EyP54BdEHeZ8whoiA6jrXSqg_F-tmB5Ubktv9reqn7u6MepgoNeElmhWStIG6sOQzPu4M9odzGhrLMN5EinujiJZHeeVd2ZjmrYi_XYW0nuIPzXlSD0f0Enmr6qkt-P8JkZtP-f0FyKEFFcu5NcgSQdwyaQs0t0xFkFJAKsYVdiLy1YmJpPOBxC6h4H-Jy5jAW_CJQ-4MzaTd0NA54E0Wl_okxNY9kFRPhQg4geOJ2J_pIA95mw8vNnex4q9W3UubBx-_lkGtomObVvaul0249ewxQUmbEy0mrhG3Zvxgf-kLI_rpmCKHJ4VJlBth0nN5XyE6B8YSOdNUXmWPVP8rkC9xjKt3v7lNuTuqKA6Av-IFJeUGWtm4Um4_4LGJE54r8PhlfnIWAwI9Xx'
-            }
-        }).then(function(response) {
-            return response.json();
-        }).then(function(responseJSON) {
-            if (responseJSON.isSuccess) {
-                document.body.removeChild(document.getElementsByClassName("editWindow")[0]);
-                reloadMC();
-            }
-            else
-                alert(responseJSON.errorMessage);
-        });
-    }
     // END
-    // all server requests
+    // api requests
 
     // rendering
     // START
@@ -108,14 +107,15 @@ export default function MainContent() {
         let gens = [];
         let k = 0;
 
-        let main = result.filter(item => item.operationCategoryId == id)[0];
+        let main = result.find(item =>
+            item.operationCategoryId == id);
         gens.push([main]);
 
         while(true) {
             for (let i = 0; i < gens[k].length; i++) {
                 newGen = newGen.concat(result.filter(item =>
-                    item.parentOperationCategoryId == gens[k][i].operationCategoryId))
-                    .filter(item => item['isVisible']);
+                    item.parentOperationCategoryId == gens[k][i].operationCategoryId &&
+                    item.isVisible));
             }
 
             if (newGen.length == 0) break;
@@ -126,28 +126,22 @@ export default function MainContent() {
 
         for (let i = 1; i < gens.length; i++) {
             for (let j = 0; j < gens[i].length; j++) {
-                if (i > 1) {
-                    let parentCategory = rdyToRender.filter(item =>
-                        item.article.operationCategoryId == gens[i][j].parentOperationCategoryId)[0];
-                    let parentCategoryIndex = rdyToRender.indexOf(parentCategory);
+                let parentCategory = rdyToRender.find(item =>
+                    gens[i][j].parentOperationCategoryId == item.article.operationCategoryId);
+                let parentCategoryIndex = rdyToRender.indexOf(parentCategory);
 
-                    helper = rdyToRender;
-                    rdyToRender = helper.slice(0, parentCategoryIndex + 1);
-                    rdyToRender.push({ article: gens[i][j], generation: i - 1 });
+                helper = rdyToRender;
+                rdyToRender = helper.slice(0, parentCategoryIndex + 1);
+                rdyToRender.push({ article: gens[i][j], generation: i - 1 });
 
-                    if (helper.length - rdyToRender.length >= 0) {
-                        rdyToRender = rdyToRender.concat(helper.slice(parentCategoryIndex + 1));
-                    }
-                }
-
-                else {
-                    rdyToRender.push({ article: gens[i][j], generation: 0 })
+                if (helper.length - rdyToRender.length >= 0) {
+                    rdyToRender = rdyToRender.concat(helper.slice(parentCategoryIndex + 1));
                 }
             }
         }
 
         return rdyToRender;
-    }   // getting the object list for rendering records
+    }   // getting the object list from specified id
 
     function buttons(element) {
         const newElement = document.createElement("div");
@@ -173,7 +167,7 @@ export default function MainContent() {
         newElement.appendChild(deleteButton);
 
         return newElement;
-    }   // records-div content
+    }   // returns buttons for rendering records
 
     async function drawRecords() {
         let array = await getTheTree(document.getElementsByClassName('activeTab')[0].id);
@@ -268,11 +262,10 @@ export default function MainContent() {
 
             document.getElementById('h').innerHTML += `<br>"${document.getElementById('3').value}"`;
         }
-    }
+    } // shows edition window
 
     async function showCreateWindow() {
         if (document.getElementsByClassName('editWindow').length == 0) {
-
             const newElement = document.createElement("div");
             let tabs = [['5899680', 'Доходы'], ['5899687', 'Расходы'], ['5899640', 'Активы'], ['5899663', 'Обязательства'], ['5899675','Капитал']];
 
@@ -323,27 +316,8 @@ export default function MainContent() {
             document.getElementById('1').onclick = function () {fillField2(null); fillField3(null)};
             document.getElementById('checkMark').onclick = function() {admitCreation()};
         }
-    }
-    async function admitCreation() {
-        let v1 = document.getElementById('1').value;
-        let v2 = document.getElementById('2').value;
-        let v3 = document.getElementById('3').value;
-
-        if (v3.length > 0) {
-            let tree = await getTheTree(v1);
-
-            let parentArticle = tree.filter(item => item.article.title == v2)[0];
-            let fields = {"activityType": parentArticle.article.activityType.toString(),
-                "operationCategoryType": parentArticle.article.operationCategoryType.toString(),
-                "parentOperationCategoryId": parentArticle.article.operationCategoryId.toString(),
-                "title": v3}
-
-            createRecord(fields);
-        }
-        else {
-            alert("Заполните все поля")
-        }
-    }
+    } // shows creation window
+    
     async function fillField2(id) {
         let f1 = document.getElementById('1');
         let tree = await getTheTree(f1.value);
@@ -367,7 +341,7 @@ export default function MainContent() {
                 f2.appendChild(newOption);
             }
         }
-    }
+    } // fills select-box in create/edit window
 
     async function fillField3(id) {
         let f3 = document.getElementById('3');
@@ -382,7 +356,7 @@ export default function MainContent() {
             let tree = await getTheTree(f1);
             f3['value'] = tree.filter(item => item.article.operationCategoryId == id)[0].article['title']
         }
-    }
+    } // fills input in create/edit window
 
     async function admitEdition(id: number) {
         let v1 = document.getElementById('1').value;
@@ -405,11 +379,32 @@ export default function MainContent() {
         else {
             alert("Заполните все поля и проверьте указание связей")
         }
-    }
+    } // getting info for put-request
+    
+    async function admitCreation() {
+        let v1 = document.getElementById('1').value;
+        let v2 = document.getElementById('2').value;
+        let v3 = document.getElementById('3').value;
+
+        if (v3.length > 0) {
+            let tree = await getTheTree(v1);
+
+            let parentArticle = tree.filter(item => item.article.title == v2)[0];
+            let fields = {"activityType": parentArticle.article.activityType.toString(),
+                "operationCategoryType": parentArticle.article.operationCategoryType.toString(),
+                "parentOperationCategoryId": parentArticle.article.operationCategoryId.toString(),
+                "title": v3}
+
+            createRecord(fields);
+        }
+        else {
+            alert("Заполните все поля")
+        }
+    } // getting info for post-request
 
     async function del(id: number) {
         deleteRecord(id);
-    }
+    } // delete-request
     // END
     // functioning of the site
 
